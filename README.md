@@ -2,6 +2,12 @@
 
 Local MVP for filling clinical forms, lab requests, and consultation letters from one patient entry. Select one template to download a PDF or several to download a ZIP of PDFs.
 
+## Workflow preview
+
+![Animated walkthrough of patient entry, template selection, and PDF generation](docs/screenshots/workflow.gif)
+
+The preview uses fictitious patient data.
+
 ## Run
 
 ```bash
