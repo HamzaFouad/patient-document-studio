@@ -7,7 +7,11 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
+from .catalog import LocalTestCatalog
+from .database import Database
+from .form_assets import FormAssetSource, LocalFormAssetSource
 from .models import GenerateRequest
+from .registry_api import create_registry_router
 from .render import render_pdf
 from .repository import LocalTemplateSource, TemplateSource
 
@@ -15,14 +19,29 @@ from .repository import LocalTemplateSource, TemplateSource
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def create_app(template_source: TemplateSource | None = None) -> FastAPI:
-    source = template_source or LocalTemplateSource(Path(os.environ.get("TEMPLATE_DIR", ROOT / "templates")))
+def create_app(template_source: TemplateSource | None = None, database_path: Path | None = None, form_asset_source: FormAssetSource | None = None) -> FastAPI:
+    source = template_source if template_source is not None else LocalTemplateSource(Path(os.environ.get("TEMPLATE_DIR", ROOT / "templates")))
+    database = Database(Path(database_path or os.environ.get("DATABASE_PATH", ROOT / "data" / "patients.sqlite3")))
+    catalog = LocalTestCatalog(ROOT / "catalog" / "labs.json")
+    asset_source = form_asset_source if form_asset_source is not None else LocalFormAssetSource(Path(os.environ.get("FORM_ASSET_DIR", ROOT / "form_assets")))
     app = FastAPI(title="Patient Document Studio", docs_url=None, redoc_url=None)
     app.mount("/assets", StaticFiles(directory=ROOT / "web"), name="assets")
+    app.include_router(create_registry_router(database, catalog, source, asset_source))
+
+    @app.middleware("http")
+    async def no_patient_cache(request, call_next):
+        response = await call_next(request)
+        if request.url.path.startswith(("/api/patients", "/api/orders", "/api/summary", "/api/maintenance")):
+            response.headers["Cache-Control"] = "no-store"
+        return response
 
     @app.get("/")
     def home():
         return FileResponse(ROOT / "web" / "index.html")
+
+    @app.get("/quick")
+    def quick_form():
+        return FileResponse(ROOT / "web" / "quick.html")
 
     @app.get("/api/templates")
     def list_templates():

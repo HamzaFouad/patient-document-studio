@@ -36,6 +36,7 @@ class Patient(BaseModel):
     name: str = Field(min_length=1, max_length=160)
     age: int = Field(ge=0, le=120)
     medical_history: str = Field(default="", max_length=5000)
+    code: str = ""
 
     @field_validator("name")
     @classmethod
@@ -69,3 +70,22 @@ class GenerateRequest(BaseModel):
         if len(self.template_ids) != len(set(self.template_ids)):
             raise ValueError("Select each template only once")
         return self
+
+
+class OrderCreate(BaseModel):
+    test_ids: list[str] = Field(min_length=1, max_length=50)
+    doctor_name: str = Field(default="", max_length=160)
+    clinical_question: str = Field(default="", max_length=2000)
+    copies: int = Field(default=1, ge=1, le=10)
+
+    @model_validator(mode="after")
+    def valid_order(self):
+        if len(self.test_ids) != len(set(self.test_ids)):
+            raise ValueError("Select each test only once")
+        self.doctor_name = self.doctor_name.strip()
+        self.clinical_question = self.clinical_question.strip()
+        return self
+
+
+class PurgeRequest(BaseModel):
+    older_than_days: int = Field(ge=1, le=3650)

@@ -14,6 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import BaseDocTemplate, Frame, HRFlowable, KeepTogether, PageTemplate, Paragraph, Spacer, Table, TableStyle
 
 from .models import DocumentTemplate, GenerateRequest
+from .text import pdf_display_text
 
 
 TOKEN = re.compile(r"{{\s*([a-z][a-z0-9_.]*)\s*}}")
@@ -38,6 +39,7 @@ FONT = _font_name()
 def _values(template: DocumentTemplate, request: GenerateRequest) -> dict[str, str]:
     values = {
         "patient.name": request.patient.name,
+        "patient.code": request.patient.code or "—",
         "patient.age": str(request.patient.age),
         "patient.medical_history": request.patient.medical_history or "—",
         "doctor.name": request.doctor.name,
@@ -53,7 +55,7 @@ def fill_text(source: str, values: dict[str, str]) -> str:
         key = match.group(1)
         if key not in values:
             raise ValueError(f"Unknown placeholder: {key}")
-        return escape(values[key]).replace("\n", "<br/>")
+        return escape(pdf_display_text(values[key])).replace("\n", "<br/>")
 
     return TOKEN.sub(replace, escape(source, quote=False))
 

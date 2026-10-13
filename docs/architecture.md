@@ -1,27 +1,24 @@
 # Architecture and decisions
 
-## Goal
+## Workflow
 
-A doctor enters patient details once, selects one or more clinical document templates, adds the fields those templates require, and downloads completed PDFs. This MVP is intended for local evaluation with sample data.
+The browser at `/` shows a patient registry. Patients and orders persist in SQLite. A patient has a generated stable code; an order stores a snapshot of the selected tests, doctor, clinical question, copies, and creation time. The patient record supplies current name, age, and history whenever an order is downloaded. The summary PDF uses current patient data and order names.
 
-## Decisions
+`catalog/labs.json` groups tests by laboratory. Each test references a request form ID. Selected tests are grouped by laboratory and form ID, so several tests can be written on one form. The app emits the requested copies of each form. A single output is a PDF; multiple outputs are a ZIP.
 
-- **Private GitHub repository.** The project concerns clinical workflows, so source is private by default. No patient records or generated files belong in Git.
-- **Local-first FastAPI app.** A small browser interface talks to a Python API on localhost. Patient input is used in memory for each request; there is no database, account system, or generation history.
-- **No external assets.** The interface uses system fonts and local static files so opening it makes no third-party asset requests.
-- **One normalized template model.** JSON files in `templates/` define metadata, additional input fields, and document blocks. The `TemplateSource` protocol returns normalized `DocumentTemplate` objects. A later Google Docs or server API adapter can implement this protocol without changing the form or PDF generator.
-- **PDF output for MVP.** ReportLab renders the normalized blocks to paginated A4 PDFs. Source ingestion and output rendering are separate decisions. Word or existing PDF templates will need an adapter or renderer rather than a change to the doctor form.
-- **Explicit placeholders.** Only `patient.name`, `patient.age`, `patient.medical_history`, `doctor.name`, `today`, and declared `fields.<key>` may appear. Unknown tokens fail generation clearly; values are escaped before PDF rendering.
-- **One or many downloads.** A single selection returns a PDF. Multiple selections return a ZIP containing one PDF per template.
+## Sources and renderers
 
-## Boundaries
+- `TemplateSource` exposes `list_templates()` and `get_template(id)` for normalized JSON document templates. `LocalTemplateSource` is the default and reads `templates/`. The one-off `/quick` flow still uses this source.
+- `FormAssetSource` exposes `list_asset_ids()` and `get_asset(id)` for approved fillable PDF forms. `LocalFormAssetSource` reads `form_assets/manifest.json` and its PDFs. A matching PDF overrides a JSON request form when an order is rendered.
+- ReportLab renders JSON templates and the patient summary. pypdf fills text fields in AcroForm PDFs. Arabic text in generated ReportLab PDFs is reshaped and reordered for print rendering.
+- The browser talks only to API routes. A future Google Docs or server adapter can implement either source interface. A Docs pipeline would still need to export or normalize the source into a supported renderable form.
 
-`TemplateSource` exposes `list_templates()` and `get_template(id)`. `LocalTemplateSource` reads JSON from a configured directory and validates it. The API receives patient and template-specific data, validates selected IDs and required fields, and passes normalized templates plus values to the PDF renderer. The browser does not depend on where templates are stored.
+`create_app(template_source=..., database_path=..., form_asset_source=...)` supports source injection and isolated test databases. The catalog currently reads a local JSON file through `LocalTestCatalog` and can be replaced at the API boundary if needed later.
 
-## Template contract
+## Persistence and deletion
 
-Each JSON file has `id`, `title`, `category`, `description`, `fields`, and `blocks`. Field entries have `key`, `label`, `required`, and `multiline`. Blocks are `heading`, `paragraph`, `field`, or `spacer`; text values can contain placeholders such as `{{ patient.name }}`. See the examples in `templates/` and [template authoring](template-authoring.md).
+SQLite lives at `data/patients.sqlite3` by default. The database and generated files are ignored by Git. Patient IDs use SQLite autoincrement, so deleting a patient never reuses the displayed code. Deleting a patient also deletes that patient's orders. Cleanup previews the count before deleting records whose **creation date** is older than the selected number of days; editing a record does not reset that age. There is no scheduled deletion in this MVP.
 
 ## Limits before clinical deployment
 
-There is no authentication, audit trail, encryption at rest, access control, retention policy, EHR integration, or approved clinical/legal wording. Run on localhost with sample data only. A production release needs a privacy/security review and jurisdiction-specific template approval.
+The app is intended for local evaluation with sample data. It has no authentication, audit trail, encryption at rest, access control, approved clinical/legal wording, backup system, or regulated retention policy. A clinic deployment requires those controls and review of each form, especially Arabic rendering in supplied AcroForms.

@@ -26,7 +26,7 @@ def test_catalog_lists_local_templates():
     client = TestClient(create_app())
     response = client.get("/api/templates")
     assert response.status_code == 200
-    assert {item["id"] for item in response.json()} == {"patient-intake", "lab-request", "consultation-referral"}
+    assert {"patient-intake", "lab-request", "consultation-referral"} <= {item["id"] for item in response.json()}
     assert all("blocks" not in item for item in response.json())
 
 
@@ -57,10 +57,10 @@ def test_multiple_templates_generate_zip():
 def test_missing_required_template_field_is_rejected():
     client = TestClient(create_app())
     data = payload(["lab-request"])
-    data["fields"]["lab-request"]["clinical_question"] = " "
+    data["fields"]["lab-request"]["tests_requested"] = " "
     response = client.post("/api/generate", json=data)
     assert response.status_code == 422
-    assert "Clinical question is required" in response.json()["detail"]
+    assert "Tests requested is required" in response.json()["detail"]
 
 
 def test_unknown_template_is_rejected():

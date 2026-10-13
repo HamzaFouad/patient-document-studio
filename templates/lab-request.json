@@ -5,13 +5,16 @@
   "description": "A request sheet with clinical context for the laboratory.",
   "fields": [
     {"key": "tests_requested", "label": "Tests requested", "required": true, "multiline": true},
-    {"key": "clinical_question", "label": "Clinical question", "required": true, "multiline": true},
+    {"key": "clinical_question", "label": "Clinical question", "required": false, "multiline": true},
+    {"key": "lab_name", "label": "Laboratory", "required": false, "multiline": false},
     {"key": "priority", "label": "Priority", "required": false, "multiline": false}
   ],
   "blocks": [
     {"type": "heading", "text": "Patient and requester"},
     {"type": "field", "label": "Patient", "text": "{{ patient.name }}"},
+    {"type": "field", "label": "Patient code", "text": "{{ patient.code }}"},
     {"type": "field", "label": "Age", "text": "{{ patient.age }}"},
+    {"type": "field", "label": "Laboratory", "text": "{{ fields.lab_name }}"},
     {"type": "field", "label": "Requesting doctor", "text": "{{ doctor.name }}"},
     {"type": "field", "label": "Request date", "text": "{{ today }}"},
     {"type": "heading", "text": "Investigation"},

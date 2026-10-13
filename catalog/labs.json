@@ -1,0 +1,29 @@
+[
+  {
+    "id": "general-lab",
+    "name": "General laboratory",
+    "tests": [
+      {"id": "cbc", "name": "Complete blood count", "template_id": "lab-request"},
+      {"id": "crp", "name": "C-reactive protein", "template_id": "lab-request"},
+      {"id": "hba1c", "name": "HbA1c", "template_id": "lab-request"},
+      {"id": "thyroid-panel", "name": "Thyroid function panel", "template_id": "lab-request"}
+    ]
+  },
+  {
+    "id": "genetics-lab",
+    "name": "Genetics laboratory",
+    "tests": [
+      {"id": "brca-panel", "name": "BRCA panel", "template_id": "genetic-request"},
+      {"id": "carrier-screen", "name": "Carrier screening", "template_id": "genetic-request"},
+      {"id": "exome-sequencing", "name": "Exome sequencing", "template_id": "genetic-request"}
+    ]
+  },
+  {
+    "id": "pathology-lab",
+    "name": "Pathology laboratory",
+    "tests": [
+      {"id": "histopathology", "name": "Histopathology", "template_id": "pathology-request"},
+      {"id": "immunohistochemistry", "name": "Immunohistochemistry", "template_id": "pathology-request"}
+    ]
+  }
+]

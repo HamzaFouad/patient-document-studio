@@ -1,6 +1,6 @@
-# Template authoring
+# JSON template authoring
 
-Add a `.json` file in `templates/` with a unique lowercase `id`. Restart the server to reload after edits (or run with `--reload`). The browser lists templates from the configured source and creates input controls from each template's `fields` array.
+Add a `.json` file in `templates/` with a unique lowercase `id`. These are the generated fallback forms and the templates offered by the one-off `/quick` page. The request-form workflow chooses a template through the `template_id` in `catalog/labs.json`. For an approved fillable PDF layout, see [form assets](../form_assets/README.md).
 
 ```json
 {
@@ -17,8 +17,6 @@ Add a `.json` file in `templates/` with a unique lowercase `id`. Restart the ser
 }
 ```
 
-Available placeholders are `patient.name`, `patient.age`, `patient.medical_history`, `doctor.name`, `today`, and `fields.<key>` for fields declared in that file. The renderer preserves newlines and escapes entered text. Empty optional fields show an em dash. Keep clinical wording reviewed by qualified staff before use.
+Available placeholders are `patient.name`, `patient.code`, `patient.age`, `patient.medical_history`, `doctor.name`, `today`, and declared `fields.<key>`. The request-form workflow supplies `fields.lab_name`, `fields.tests_requested`, and `fields.clinical_question`. The renderer preserves newlines and escapes entered text. Empty optional fields show an em dash.
 
-Template-specific answers are scoped to the template ID in the generation request. Two templates may both declare a field named `reason` without sharing its answer.
-
-To use Google Docs later, implement `TemplateSource` in `app/repository.py` or another module. Map each external document's metadata and body into `DocumentTemplate`, then pass an instance to `create_app(template_source=...)`. The API, browser, and PDF renderer consume the normalized model and need no source-specific code.
+To replace local JSON files later, implement `TemplateSource` and pass it to `create_app(template_source=...)`. Map external metadata and body into `DocumentTemplate` objects. The browser and PDF renderer use the normalized model.

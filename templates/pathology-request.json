@@ -1,0 +1,24 @@
+{
+  "id": "pathology-request",
+  "title": "Pathology Request",
+  "category": "Lab requests",
+  "description": "A request sheet for pathology testing.",
+  "fields": [
+    {"key": "tests_requested", "label": "Tests requested", "required": true, "multiline": true},
+    {"key": "clinical_question", "label": "Clinical question", "required": false, "multiline": true},
+    {"key": "lab_name", "label": "Laboratory", "required": false, "multiline": false}
+  ],
+  "blocks": [
+    {"type": "heading", "text": "Patient and requester"},
+    {"type": "field", "label": "Patient", "text": "{{ patient.name }}"},
+    {"type": "field", "label": "Patient code", "text": "{{ patient.code }}"},
+    {"type": "field", "label": "Age", "text": "{{ patient.age }}"},
+    {"type": "field", "label": "Laboratory", "text": "{{ fields.lab_name }}"},
+    {"type": "field", "label": "Requesting doctor", "text": "{{ doctor.name }}"},
+    {"type": "field", "label": "Request date", "text": "{{ today }}"},
+    {"type": "heading", "text": "Pathology investigation"},
+    {"type": "field", "label": "Tests requested", "text": "{{ fields.tests_requested }}"},
+    {"type": "field", "label": "Clinical question", "text": "{{ fields.clinical_question }}"},
+    {"type": "field", "label": "Relevant history", "text": "{{ patient.medical_history }}"}
+  ]
+}

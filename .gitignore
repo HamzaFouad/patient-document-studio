@@ -7,3 +7,5 @@ __pycache__/
 generated/
 *.pdf
 *.zip
+data/
+*.sqlite3
