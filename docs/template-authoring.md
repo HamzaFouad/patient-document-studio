@@ -19,5 +19,6 @@ Add a `.json` file in `templates/` with a unique lowercase `id`. Restart the ser
 
 Available placeholders are `patient.name`, `patient.age`, `patient.medical_history`, `doctor.name`, `today`, and `fields.<key>` for fields declared in that file. The renderer preserves newlines and escapes entered text. Empty optional fields show an em dash. Keep clinical wording reviewed by qualified staff before use.
 
-To use Google Docs later, implement `TemplateSource` in `app/repository.py` or another module. Map each external document's metadata and body into `DocumentTemplate`, then pass an instance to `create_app(template_source=...)`. The API, browser, and PDF renderer consume the normalized model and need no source-specific code.
+Template-specific answers are scoped to the template ID in the generation request. Two templates may both declare a field named `reason` without sharing its answer.
 
+To use Google Docs later, implement `TemplateSource` in `app/repository.py` or another module. Map each external document's metadata and body into `DocumentTemplate`, then pass an instance to `create_app(template_source=...)`. The API, browser, and PDF renderer consume the normalized model and need no source-specific code.

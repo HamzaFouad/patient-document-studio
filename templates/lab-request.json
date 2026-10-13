@@ -1,0 +1,23 @@
+{
+  "id": "lab-request",
+  "title": "Laboratory Request",
+  "category": "Lab requests",
+  "description": "A request sheet with clinical context for the laboratory.",
+  "fields": [
+    {"key": "tests_requested", "label": "Tests requested", "required": true, "multiline": true},
+    {"key": "clinical_question", "label": "Clinical question", "required": true, "multiline": true},
+    {"key": "priority", "label": "Priority", "required": false, "multiline": false}
+  ],
+  "blocks": [
+    {"type": "heading", "text": "Patient and requester"},
+    {"type": "field", "label": "Patient", "text": "{{ patient.name }}"},
+    {"type": "field", "label": "Age", "text": "{{ patient.age }}"},
+    {"type": "field", "label": "Requesting doctor", "text": "{{ doctor.name }}"},
+    {"type": "field", "label": "Request date", "text": "{{ today }}"},
+    {"type": "heading", "text": "Investigation"},
+    {"type": "field", "label": "Tests requested", "text": "{{ fields.tests_requested }}"},
+    {"type": "field", "label": "Clinical question", "text": "{{ fields.clinical_question }}"},
+    {"type": "field", "label": "Priority", "text": "{{ fields.priority }}"},
+    {"type": "field", "label": "Relevant history", "text": "{{ patient.medical_history }}"}
+  ]
+}

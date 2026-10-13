@@ -1,0 +1,24 @@
+{
+  "id": "patient-intake",
+  "title": "Patient Intake Form",
+  "category": "Forms",
+  "description": "A concise visit summary for the patient's chart.",
+  "fields": [
+    {"key": "chief_complaint", "label": "Chief complaint", "required": true, "multiline": true},
+    {"key": "assessment", "label": "Assessment", "required": false, "multiline": true},
+    {"key": "plan", "label": "Plan", "required": false, "multiline": true}
+  ],
+  "blocks": [
+    {"type": "heading", "text": "Patient details"},
+    {"type": "field", "label": "Name", "text": "{{ patient.name }}"},
+    {"type": "field", "label": "Age", "text": "{{ patient.age }}"},
+    {"type": "field", "label": "Date", "text": "{{ today }}"},
+    {"type": "heading", "text": "Clinical summary"},
+    {"type": "field", "label": "Chief complaint", "text": "{{ fields.chief_complaint }}"},
+    {"type": "field", "label": "Medical history", "text": "{{ patient.medical_history }}"},
+    {"type": "field", "label": "Assessment", "text": "{{ fields.assessment }}"},
+    {"type": "field", "label": "Plan", "text": "{{ fields.plan }}"},
+    {"type": "spacer"},
+    {"type": "paragraph", "text": "Prepared by {{ doctor.name }}"}
+  ]
+}

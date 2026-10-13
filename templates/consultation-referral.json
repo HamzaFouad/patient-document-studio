@@ -1,0 +1,23 @@
+{
+  "id": "consultation-referral",
+  "title": "Consultation Referral",
+  "category": "Consultations",
+  "description": "A referral letter to another clinician or specialty.",
+  "fields": [
+    {"key": "specialty", "label": "Specialty or clinician", "required": true, "multiline": false},
+    {"key": "referral_reason", "label": "Reason for consultation", "required": true, "multiline": true},
+    {"key": "relevant_findings", "label": "Relevant findings", "required": false, "multiline": true}
+  ],
+  "blocks": [
+    {"type": "paragraph", "text": "Date: {{ today }}"},
+    {"type": "paragraph", "text": "To: {{ fields.specialty }}"},
+    {"type": "paragraph", "text": "Dear colleague,"},
+    {"type": "paragraph", "text": "I am referring {{ patient.name }}, age {{ patient.age }}, for consultation regarding {{ fields.referral_reason }}."},
+    {"type": "heading", "text": "Clinical background"},
+    {"type": "field", "label": "Medical history", "text": "{{ patient.medical_history }}"},
+    {"type": "field", "label": "Relevant findings", "text": "{{ fields.relevant_findings }}"},
+    {"type": "paragraph", "text": "Thank you for your assessment and recommendations."},
+    {"type": "spacer"},
+    {"type": "paragraph", "text": "Sincerely, {{ doctor.name }}"}
+  ]
+}

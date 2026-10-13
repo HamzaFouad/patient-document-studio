@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Patient Document Studio</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+  <script src="/assets/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand-mark" aria-hidden="true">+</div>
+      <div class="brand-copy"><strong>Patient Document Studio</strong><span>Clinical documents, prepared with care</span></div>
+      <span class="environment">Local workspace</span>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="eyebrow">DOCUMENT WORKSPACE <span class="eyebrow-line"></span> 01 / 03</div>
+        <h1>Prepare the right document<br><em>for every patient.</em></h1>
+        <p>Enter patient details once, choose the forms you need, and download ready-to-review PDFs.</p>
+      </section>
+
+      <form id="document-form" novalidate>
+        <div class="workspace-grid">
+          <div class="primary-column">
+            <section class="panel" aria-labelledby="patient-heading">
+              <div class="panel-heading"><div class="step-number">01</div><div><div class="section-kicker">PATIENT PROFILE</div><h2 id="patient-heading">Patient information</h2></div></div>
+              <div class="form-grid">
+                <label class="field full"><span>Patient name <b>*</b></span><input id="patient-name" name="patientName" autocomplete="off" required placeholder="e.g. Alex Morgan" maxlength="160"></label>
+                <label class="field"><span>Age <b>*</b></span><input id="patient-age" name="patientAge" type="number" min="0" max="120" required placeholder="Years"></label>
+                <label class="field"><span>Doctor name <b>*</b></span><input id="doctor-name" name="doctorName" autocomplete="off" required placeholder="e.g. Dr. Sam Lee" maxlength="160"></label>
+                <label class="field full"><span>Short medical history</span><textarea id="medical-history" name="medicalHistory" rows="4" maxlength="5000" placeholder="Relevant diagnoses, treatment, allergies, or prior findings"></textarea></label>
+              </div>
+            </section>
+
+            <section class="panel" aria-labelledby="templates-heading">
+              <div class="panel-heading"><div class="step-number">02</div><div><div class="section-kicker">DOCUMENT LIBRARY</div><h2 id="templates-heading">Choose templates</h2></div></div>
+              <p class="section-description">Select one or more documents. Each template adds the details it needs below.</p>
+              <div id="template-list" class="template-list" aria-live="polite"><p class="loading">Loading templates…</p></div>
+            </section>
+
+            <section class="panel detail-panel" id="details-panel" aria-labelledby="details-heading" hidden>
+              <div class="panel-heading"><div class="step-number">03</div><div><div class="section-kicker">DOCUMENT DETAILS</div><h2 id="details-heading">Complete selected templates</h2></div></div>
+              <div id="template-fields"></div>
+            </section>
+          </div>
+
+          <aside class="summary-card" aria-labelledby="summary-heading">
+            <div class="summary-top"><span class="summary-icon" aria-hidden="true">▤</span><span>YOUR DOCUMENT SET</span></div>
+            <h2 id="summary-heading">Ready when you are.</h2>
+            <p id="summary-description">Choose a template to start building your document set.</p>
+            <div class="summary-divider"></div>
+            <div class="summary-count"><span>Selected templates</span><strong id="selected-count">00</strong></div>
+            <ul id="selected-list" class="selected-list"></ul>
+            <button class="generate-button" id="generate-button" type="submit" disabled><span id="button-label">Generate documents</span><span aria-hidden="true">↗</span></button>
+            <p class="summary-note">Files are created on request and downloaded to your device.</p>
+            <div id="status" class="status" role="status" aria-live="polite"></div>
+          </aside>
+        </div>
+      </form>
+    </main>
+    <footer>Patient Document Studio <span>•</span> Local MVP for sample data</footer>
+  </div>
+</body>
+</html>
